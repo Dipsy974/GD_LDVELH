@@ -593,8 +593,8 @@ Points de vie : $ennemiHp / $ennemiMaxHp
 (link-goto: &quot;Vous vous préparez&quot;, &quot;Combat&quot;)</tw-passagedata><tw-passagedata pid="34" name="Test corniche" tags="cave" position="2200,1502" size="100,100">(set: $deAdresse to (random: 1,6))
 	Vous jetez un dé d&#39;adresse de 6 et faites un $deAdresse
 (if: $deAdresse is 1 or is 6)[
-	Vous vous aventurez prudemment sur la corniche, au bout de celle-ci, vous atteignez une cavité dans laquelle se sont amassées les pièces d&#39;or jetées dans le puits par les passants en quête de bonne fortune. Vous gagnez 100 pièces d&#39;or.
-	(set: $playerMoney to $playerMoney + 100)
+	Vous vous aventurez prudemment sur la corniche, au bout de celle-ci, vous atteignez une cavité dans laquelle se sont amassées les pièces d&#39;or jetées dans le puits par les passants en quête de bonne fortune. Vous gagnez 150 pièces d&#39;or.
+	(set: $playerMoney to $playerMoney + 150)
 	(link-goto: &quot;Remonter et retourner sur la place du village&quot;, &quot;Place du village&quot;)
 ]
 (else:)[
@@ -866,8 +866,8 @@ Vous décidez de montez à l&#39;étage. Les escaliers sont un peu effondrés ma
 </tw-passagedata><tw-passagedata pid="58" name="Test etage" tags="watchtower" position="700,2401" size="100,100">(set: $deAdresse to (random: 1,6))
 	Vous jetez un dé d&#39;adresse de 6 et faites un $deAdresse
 (if: $deAdresse is 1 or is 6)[
-	(print: &quot;Après un bon élan, vous faites un saut incroyable et arrivez de l&#39;autre côté. Vous ouvrez le coffre et y trouvez 100 pièces d&#39;or.&quot;)
-	(set: $playerMoney to $playerMoney + 100)
+	(print: &quot;Après un bon élan, vous faites un saut incroyable et arrivez de l&#39;autre côté. Vous ouvrez le coffre et y trouvez 150 pièces d&#39;or.&quot;)
+	(set: $playerMoney to $playerMoney + 150)
 	(link-goto: &quot;Sortir et retourner au campement&quot;, &quot;Hub ruines&quot;)
 ]
 (else:)[
