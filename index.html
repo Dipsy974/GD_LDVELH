@@ -107,9 +107,12 @@ tw-passage{
 (set: $voyante to false)
 (set: $connait_secret to false)
 
+
 (set: $testPasFait to true)
 (set: $poursuiteGuerriere to false)
 (set: $echec to 0)
+(set: $thornMort to false)
+
 
 (set: $soussol to false)
 (set: $conversation to false)
@@ -199,6 +202,9 @@ Vous récupérez $ennemiCommonDrop pièces d&#39;or.
 
 ]
 ]
+(if: $ennemiName is &quot;Thorn le Roublard&quot;)[
+(set: $thornMort to true) 
+]
 (link-goto: &quot;Fin du combat&quot;, $destination)
 
 </tw-passagedata><tw-passagedata pid="7" name="Attaque" tags="" position="100,302" size="100,100">(change:?Page, (background:$background))
@@ -235,7 +241,7 @@ Il lui reste $ennemiHp points de vie.
 ]
 
 (if: $ennemiHp&gt;0)[
-	(link-goto: &quot;Fin du tour&quot;, &quot;Tour ennemi&quot;)
+	(link-goto: &quot;Tour ennemi&quot;, &quot;Tour ennemi&quot;)
 ]
 (else:)[
 	(link-goto: &quot;Fin du tour&quot;, &quot;Victoire&quot;)
@@ -261,7 +267,7 @@ Vous lancez un sort à $ennemiName et lui infligez $damages dégats.
 Il lui reste $ennemiHp points de vie.
 
 (if: $ennemiHp&gt;0)[
-	(link-goto: &quot;Fin du tour&quot;, &quot;Tour ennemi&quot;)
+	(link-goto: &quot;Tour ennemi&quot;, &quot;Tour ennemi&quot;)
 ]
 (else:)[
 	(link-goto: &quot;Fin du tour&quot;, &quot;Victoire&quot;)
@@ -707,8 +713,8 @@ Prix : 340 pièces d&#39;or&quot;)
 (link-reveal: &quot;Acheter l&#39;arme et l&#39;équiper&quot;)[
 (if: $playerMoney&gt;= 340)[
 	(set: $playerMoney to $playerMoney - 340)
-	(set: $playerMaxHp to (40 + $currentWeapon&#39;s 4th + $currentMagicWeapon&#39;s 5th))
 	(set: $currentWeapon to $epeeChevalier)
+	(set: $playerMaxHp to (40 + $currentWeapon&#39;s 4th + $currentMagicWeapon&#39;s 5th))
 	Vous achetez une épée de chevalier !
 ]
 (else:)[ 
@@ -734,8 +740,8 @@ Prix: 50 pièces d&#39;or&quot;)
 (link-reveal: &quot;Acheter l&#39;artefact et l&#39;équiper&quot;)[
 (if: $playerMoney &gt;= 340)[
 	(set: $playerMoney to $playerMoney - 340)
-	(set: $playerMaxHp to (40 + $currentWeapon&#39;s 4th + $currentMagicWeapon&#39;s 5th))
 	(set: $currentMagicWeapon to $anneauArcanes)
+	(set: $playerMaxHp to (40 + $currentWeapon&#39;s 4th + $currentMagicWeapon&#39;s 5th))
 	Vous achetez un anneau des arcanes !
 ]
 (else:)[
@@ -785,7 +791,9 @@ Vous jetez un dé de perception de 6 et faites un $dePerception.
   (link-goto: &quot;Vous vous préparez&quot;, &quot;Combat&quot;)
 ]
 (else:)[
-  (print: &quot;Vous accédez aux sous-sols des ruines. L&#39;endroit semble mieux conservé que le reste, comme si le temps l&#39;avait épargné. Cependant un corps se trouve au centre. Il s&#39;agit d&#39;un gobelin. Vous n&#39;avez presque pas le temps d&#39;être étonné de son état quand quelqu&#39;un hurle derrière vous : \&quot;Je vais te tuer ! Tu vas payer ce que tu as fait à Thorn !\&quot;&quot;)
+  (print: &quot;Vous accédez aux sous-sols des ruines. L&#39;endroit semble mieux conservé que le reste, comme si le temps l&#39;avait épargné. Cependant un corps se trouve au centre. Il s&#39;agit d&#39;un gobelin. Vous n&#39;avez presque pas le temps d&#39;être étonné de son état quand quelqu&#39;un hurle derrière vous : &quot;)
+  (if: $thornMort)[(print:&quot;\&quot;Je vais te tuer ! Tu vas payer ce que tu as fait à Thorn!\&quot;&quot;)]
+  (else:)[(print:&quot;\&quot;Comme on se retrouve ! Rend nous cette clé, le trésor est à nous ! \&quot;&quot;)]
   (set: $ennemiName to $ennemi5&#39;s 1st)
   (set: $ennemiHp to $ennemi5&#39;s 2nd)
   (set: $ennemiMaxHp to $ennemi5&#39;s 2nd)
