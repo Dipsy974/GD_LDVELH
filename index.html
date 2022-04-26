@@ -123,14 +123,14 @@ tw-passage{
 (go-to: &quot;Début&quot;)
 </tw-passagedata><tw-passagedata pid="2" name="Combat" tags="" position="100,100" size="100,100">{
 (if: $combatBoss is false)[
-(masteraudio: &#39;stopall&#39;)
+(group: &#39;playing&#39;, &#39;stop&#39;)
 (track: &#39;battle&#39;, &#39;loop&#39;, true)
-(track: &#39;battle&#39;, &#39;playwhenpossible&#39;)
+(track: &#39;battle&#39;, &#39;play&#39;)
 ]
 (else-if: $combatBoss)[
-(masteraudio: &#39;stopall&#39;)
+(group: &#39;playing&#39;, &#39;stop&#39;)
 (track: &#39;battle_2&#39;, &#39;loop&#39;, true)
-(track: &#39;battle_2&#39;, &#39;playwhenpossible&#39;)
+(track: &#39;battle_2&#39;, &#39;play&#39;)
 ]
 }
 (change:?Page, (background:$background))
@@ -210,19 +210,28 @@ Vous récupérez $ennemiCommonDrop pièces d&#39;or.
 ]
 
 Vous tirez un dé de 6 et faites un $bonusAttack.
+
 (if: $combatBoss and $phase2)[
 (print: &quot;Vous tentez de frappez &quot; + $ennemiName + &quot; mais sa peau est totalement impénétrable. &quot;)
 ]
 (else:)[
 Vous assénez un violent coup à $ennemiName et lui infligez $damages dégats.
+(link-reveal: &quot;Détails&quot;)[
+(color:green)[(print: &quot;( Dégats de base + Jet ) x Faiblesse physique ennemi&quot; )]
+(color:green)[(print: &quot;( &quot; +(str:$currentWeapon&#39;s 3rd) +&quot; + &quot;+ (str:$bonusAttack) + &quot; ) x &quot; + (str:$ennemiAttackWeakness) )]
+]
 ]
 Il lui reste $ennemiHp points de vie.
 (if: $combatBoss and $ennemiHp&lt;100)[
+(if: $phase1)[
 (print: &quot;Le bouclier magique du démon se brise. Il s&#39;enrage et sa peau durcit à vue d&#39;oeil.&quot;)
 (set: $ennemiAttackWeakness to 0)
 (set: $ennemiMagicWeakness to 1.8)
 (set: $phase1 to false)
-(set: $phase2 to true)
+(set: $phase2 to true)]
+(else:)[
+(print: &quot;Le bouclier magique du démon s&#39;est brisé. Mais depuis sa peau est dure comme la pierre.&quot;)
+]
 ]
 
 (if: $ennemiHp&gt;0)[
@@ -244,6 +253,10 @@ $ennemiName semble protégé et absorbe votre attaque magique. Vous lui infligez
 ]
 (else: )[
 Vous lancez un sort à $ennemiName et lui infligez $damages dégats.
+(link-reveal: &quot;Détails&quot;)[
+(color:green)[(print: &quot;( Dégats de base + ( Jet x Multiplicateur ) ) x Faiblesse magique ennemi&quot; )]
+(color:green)[(print: &quot;( &quot; +(str:$currentMagicWeapon&#39;s 3rd) +&quot; + ( &quot;+ (str:$bonusAttack) + &quot; x ( &quot;+ (str:$currentMagicWeapon&#39;s 4th) +&quot; ) ) x &quot; + (str:$ennemiMagicWeakness) )]
+]
 ]
 Il lui reste $ennemiHp points de vie.
 
@@ -277,6 +290,7 @@ Connaissant désormais leur plan et l&#39;existence du trésor. Ils ne peuvent p
 (set: $background to &quot;forest.jpg&quot;)
 
 (link-goto: &quot;Vous vous préparez&quot;, &quot;Combat&quot;)</tw-passagedata><tw-passagedata pid="11" name="Début" tags="forest" position="1400,200" size="100,100">{
+(group: &#39;playing&#39;, &#39;stop&#39;)
 (track: &#39;forest&#39;, &#39;loop&#39;, true)
 (track: &#39;forest&#39;, &#39;playwhenpossible&#39;)
 }
@@ -313,7 +327,7 @@ Acceptez-vous de les rejoindre ?
 (link-goto: &quot;Oui&quot;, &quot;Explication plan&quot;)
 (link-goto: &quot;Non&quot;, &quot;Combat bandits&quot;)</tw-passagedata><tw-passagedata pid="15" name="Vers la taverne" tags="forest" position="1800,500" size="100,100">
 (link-goto: &quot;Les affaires des autres ne vous intéressent pas, vous décidez donc d&#39;aller à la taverne du village le plus proche vous abreuver.&quot;, &quot;Chef village&quot;)</tw-passagedata><tw-passagedata pid="16" name="Chef village" tags="village" position="1701,700" size="100,100">{
-(masteraudio: &#39;stopall&#39;)
+(group: &#39;playing&#39;, &#39;stop&#39;)
 (track: &#39;village&#39;, &#39;loop&#39;, true)
 (track: &#39;village&#39;, &#39;playwhenpossible&#39;)
 }
@@ -323,10 +337,12 @@ Acceptez-vous de les rejoindre ?
 En arrivant au village le chef du village vous interpelle. Il vous a reconnu et connaît votre incroyable passé de mercenaire. Il vous demande de l&#39;aide pour trouver un trésor caché aux alentours. Selon les rumeurs, la clé se trouverait dans le village. Ce trésor permettrait de sauver le village de la pauvreté et il vous promets une grosse récompense à la clé. Vous acceptez et commencez votre enquête.
 
 (link-goto: &quot;Se diriger vers la place du village.&quot;, &quot;Place du village&quot;)</tw-passagedata><tw-passagedata pid="17" name="Place du village" tags="village" position="1400,801" size="100,100">{(unless: (track: &#39;village&#39;, &#39;isplaying&#39;))[
-    (masteraudio: &#39;stopall&#39;)
+    (group: &#39;playing&#39;, &#39;stop&#39;)
 	(track: &#39;village&#39;, &#39;loop&#39;, true)
 	(track: &#39;village&#39;, &#39;playwhenpossible&#39;)
 ]}
+
+Points de vie : $playerHp / $playerMaxHp
 
 (change: ?Page, (background:&quot;village.jpg&quot;))
 Vous êtes sur la place du village.
@@ -390,11 +406,18 @@ Vous entrez dans la Taverne. Le Tavernier vous regarde d&#39;un mauvais œil. Vo
 A peine entré dans la taverne, le Tavernier vous reconnaît et vous accueille chaleureusement. Il a l&#39;habitude de vous voir passer de temps à autre le temps d&#39;un verre. Vous croisez le bibliothécaire ivre mort.
 (link-goto: &quot;Retourner sur la place&quot;, &quot;Place du village&quot;)
 ]</tw-passagedata><tw-passagedata pid="21" name="Forge" tags="village" position="1000,1000" size="100,100">(Display: &quot;Header shop&quot;)
+
+(text-color:#d4bd3b)[Forgeron : ]
 Bonjour ! Que puis-je faire pour vous ?
-(print: &quot;Epée en acier, 14 dégats de base, +20 points de vie, Prix : 150 pièces d&#39;or&quot;)
+
+(print: &quot;&#39;&#39;Epée en acier&#39;&#39; : 14 dégats de base 
++20 points de vie
+Prix : 150 pièces d&#39;or&quot;)
+
 (link-reveal: &quot;Acheter l&#39;arme et l&#39;équiper&quot;)[
 (if: $playerMoney &gt;= 150)[
 	(set: $playerMoney to $playerMoney - 150)
+	
 	(set: $currentWeapon to $epeeAcier)
 	Vous possédez désormais une épée en acier !
 	(set: $playerMaxHp to (40 + $currentWeapon&#39;s 4th + $currentMagicWeapon&#39;s 5th))
@@ -405,9 +428,18 @@ Vous n&#39;avez pas assez d&#39;argent.
 ]
 
 (link-goto: &quot;Retourner sur la place du village&quot;, &quot;Place du village&quot;)</tw-passagedata><tw-passagedata pid="22" name="Alchimiste" tags="village" position="1200,1000" size="100,100">(Display: &quot;Header shop&quot;)
+
+(text-color:#d4bd3b)[Alchimiste : ]
 Bonjour ! Que puis-je faire pour vous ?
-(print: &quot;Anneau de sorcier, 6 dégats de base, +20 points de vie, Prix : 150 pièces d&#39;or&quot;)
-(print: &quot;Potion, régénération de 40 points de vie en combat, Prix: 50 pièces d&#39;or&quot;)
+
+(print: &quot;&#39;&#39;Anneau de sorcier&#39;&#39;
+6 dégats de base
++20 points de vie
+Prix : 150 pièces d&#39;or&quot;)
+
+(print: &quot;&#39;&#39;Potion&#39;&#39;
+Régénération de 40 points de vie en combat
+Prix: 50 pièces d&#39;or&quot;)
 
 (link-reveal: &quot;Acheter l&#39;artefact et l&#39;équiper&quot;)[
 (if: $playerMoney &gt;= 150)[
@@ -420,6 +452,7 @@ Bonjour ! Que puis-je faire pour vous ?
 Vous n&#39;avez pas assez d&#39;argent.
 ]
 ]
+
 (link-reveal: &quot;Acheter une potion&quot;)[
 (if: $playerMoney &gt;= 50)[
 	(set: $playerMoney to $playerMoney - 50)
@@ -551,7 +584,7 @@ Vous trouvez dans la pièce la clé du trésor. Soudain, vous sentez une présen
 (set: $background to &quot;village.jpg&quot;)
 
 (link-goto: &quot;Vous vous préparez&quot;, &quot;Combat&quot;)</tw-passagedata><tw-passagedata pid="30" name="Entree puits" tags="cave" position="2200,1150" size="100,100">{
-(masteraudio: &#39;stopall&#39;)
+(group: &#39;playing&#39;, &#39;stop&#39;)
 (track: &#39;cave&#39;, &#39;loop&#39;, true)
 (track: &#39;cave&#39;, &#39;playwhenpossible&#39;)
 }
@@ -617,11 +650,13 @@ Vous récupérez la clé et trouvez une note indiquant la position du trésor. I
 ]
 
 (link-goto: &quot;Aller vers les ruines&quot;, &quot;Hub ruines&quot;)</tw-passagedata><tw-passagedata pid="37" name="Hub ruines" tags="ruins" position="1400,1602" size="100,100">(unless: (track: &#39;ruins&#39;, &#39;isplaying&#39;))[
-    (masteraudio: &#39;stopall&#39;)
+    (group: &#39;playing&#39;, &#39;stop&#39;)
 	(track: &#39;ruins&#39;, &#39;loop&#39;, true)
 	(track: &#39;ruins&#39;, &#39;playwhenpossible&#39;)
 ]
 (change: ?Page, (background:&quot;ruins.jpg&quot;))
+Points de vie : $playerHp / $playerMaxHp
+
 Un relais de marchands est installé près des ruines depuis peu. Ils y ont installé leur campement et vous proposent de vous y reposer. Où voulez-vous aller? 
 
 (link-goto: &quot;Forge&quot;, &quot;Forge 2&quot;)
@@ -660,12 +695,19 @@ Vous jetez un dé de charisme de 6 pour tenter d&#39;obtenir des informations et
 ]
 
 (link-goto: &quot;Retourner au campement&quot;, &quot;Hub ruines&quot;)</tw-passagedata><tw-passagedata pid="39" name="Forge 2" tags="ruins" position="800,1800" size="100,100">(Display: &quot;Header shop&quot;)
+
+(text-color:#d4bd3b)[Forgeron : ]
 Bonjour ! Que puis-je faire pour vous ?
-(print: &quot;Epée de chevalier, 20 dégats de base, +35 points de vie, Prix : 340 pièces d&#39;or&quot;)
+
+(print: &quot;&#39;&#39;Epée de chevalier&#39;&#39;
+20 dégats de base
++35 points de vie
+Prix : 340 pièces d&#39;or&quot;)
 
 (link-reveal: &quot;Acheter l&#39;arme et l&#39;équiper&quot;)[
 (if: $playerMoney&gt;= 340)[
 	(set: $playerMoney to $playerMoney - 340)
+	(set: $playerMaxHp to (40 + $currentWeapon&#39;s 4th + $currentMagicWeapon&#39;s 5th))
 	(set: $currentWeapon to $epeeChevalier)
 	Vous achetez une épée de chevalier !
 ]
@@ -674,14 +716,25 @@ Vous n&#39;avez pas assez d&#39;argent.
 ]
 ]
 
-(link-goto: &quot;Retourner au campement&quot;, &quot;Hub ruines&quot;)</tw-passagedata><tw-passagedata pid="40" name="Alchimiste 2" tags="ruins" position="1000,1801" size="100,100">(Display: &quot;Header shop&quot;)
+(link-goto: &quot;Retourner au campement&quot;, &quot;Hub ruines&quot;)</tw-passagedata><tw-passagedata pid="40" name="Alchimiste 2" tags="ruins" position="1000,1802" size="100,100">(Display: &quot;Header shop&quot;)
+
+(text-color:#d4bd3b)[Alchimiste : ]
 Bonjour ! Que puis-je faire pour vous ?
-(print: &quot;Anneau des arcanes, 8 dégats de base, +35 points de vie, Prix : 340 pièces d&#39;or&quot;)
-(print: &quot;Potion, régénération de 40 points de vie en combat, Prix: 50 pièces d&#39;or&quot;)
+
+(print: &quot;&#39;&#39;Anneau des arcanes&#39;&#39;
+8 dégats de base
++35 points de vie
+Prix : 340 pièces d&#39;or&quot;)
+
+
+(print: &quot;&#39;&#39;Potion&#39;&#39;
+Régénération de 40 points de vie en combat
+Prix: 50 pièces d&#39;or&quot;)
 
 (link-reveal: &quot;Acheter l&#39;artefact et l&#39;équiper&quot;)[
 (if: $playerMoney &gt;= 340)[
 	(set: $playerMoney to $playerMoney - 340)
+	(set: $playerMaxHp to (40 + $currentWeapon&#39;s 4th + $currentMagicWeapon&#39;s 5th))
 	(set: $currentMagicWeapon to $anneauArcanes)
 	Vous achetez un anneau des arcanes !
 ]
@@ -689,6 +742,7 @@ Bonjour ! Que puis-je faire pour vous ?
 Vous n&#39;avez pas assez d&#39;argent.
 ]
 ]
+
 (link-reveal: &quot;Acheter une potion&quot;)[
 (if: $playerMoney &gt;= 50)[
 	(set: $playerMoney to $playerMoney - 50)
@@ -759,7 +813,7 @@ Vous remarquez que les symboles s&#39;illuminent lorsque vous produisez des sons
 ]]
 
 
-(link-goto: &quot;Retourner au campement&quot;, &quot;Hub ruines&quot;)</tw-passagedata><tw-passagedata pid="44" name="Temple ruines" tags="ruins" position="2000,1800" size="100,100">Vous trouvez une tablette brisée sur lequel il est inscrit : &quot;Être supérieur, d**é**ité toute-puissante, entend le **c**hant de nos âmes. Déf**e**ndez nos terres du ma**l** qui le ronge, et  accordez vo**t**re pardon à ces pauvre**s** pêch**e**urs&quot;.
+(link-goto: &quot;Retourner au campement&quot;, &quot;Hub ruines&quot;)</tw-passagedata><tw-passagedata pid="44" name="Temple ruines" tags="ruins" position="2000,1800" size="100,100">Vous trouvez une tablette brisée sur lequel il est inscrit : &quot;Être supérieur, d(text-color:#366A99)[**é**]ité toute-puissante, entend le (text-color:#366A99)[**c**]hant de nos âmes. Déf(text-color:#366A99)[**e**]ndez nos terres du ma(text-color:#366A99)[**l**] qui le ronge, et  accordez vo(text-color:#366A99)[**t**]re pardon à ces pauvre(text-color:#366A99)[**s**] pêch(text-color:#366A99)[**e**]urs&quot;.
 (link-goto: &quot;Retourner au campement&quot;, &quot;Hub ruines&quot;)</tw-passagedata><tw-passagedata pid="45" name="Tour de guet" tags="watchtower" position="600,1801" size="100,100">(change: ?Page, (background:&quot;watchtower.jpg&quot;))
 Le crépuscule rend la visibilité très limitée, mais les indications du chef vous mène à inspecter un endroit recouvert de végétation. Il s&#39;agit bel et bien de la tour de guet qu&#39;il avait mentionné.
 La porte en bois est très usée, il est donc très facile d&#39;y entrer. Le souhaitez- vous ?
@@ -893,10 +947,11 @@ Vous décidez de montez à l&#39;étage. Les escaliers sont un peu effondrés ma
 (print:&quot;Arme équipée : &quot; + $currentWeapon&#39;s 2nd + &quot; ( &quot; + (text:$currentWeapon&#39;s 3rd) + &quot; dégats de base&quot; + &quot; )&quot;)
 (print:&quot;Arme magique équipée : &quot; + $currentMagicWeapon&#39;s 2nd + &quot; ( &quot; + (text:$currentMagicWeapon&#39;s 3rd) + &quot; dégats de base et un multiplicateur de &quot; + (text:$currentMagicWeapon&#39;s 4rd) + &quot; )&quot;)
 Potions possédées : $playerPotion
+
 Argent disponible : $playerMoney
 ---</tw-passagedata><tw-passagedata pid="61" name="Fin combat sous-sol" tags="ruins" position="1600,2000" size="100,100">Erinté par ce combat, vous tentez de reprendre votre souffle et regardez lentement autour de vous. Sur les murs de la pièce, vous distinguez des mots gravés dans la roche accompagnés d&#39;illustrations qui vous glacent le sang. En vous approchant, vous lisez ceci: &quot;En des temps immémoriaux, nos ancêtres durent combattre un démon cornu d&#39;une taille démesurée. Même les plus grands sorciers ne purent briser son bouclier magique. Les guerriers y parvinrent, mais aucun de leurs coups ne transpercèrent la peau du démon, plus dur que le meilleur des aciers. Ce n&#39;est qu&#39;en combinant leur forces qu&#39;enfin sorciers et guerriers purent venir à bout de l&#39;horrible créature et la sceller. Puisse l&#39;histoire être transmise et ce fléau ne jamais ressurgir.&quot; 
 Ces ruines sont définitivement bien mystérieuses. 
-(link-goto: &quot;Retourner au campement&quot;, &quot;Hub ruines&quot;)</tw-passagedata><tw-passagedata pid="62" name="hal.tracks" tags="" position="1091,7.5" size="100,100">forest: ./audio/forest.wav
+(link-goto: &quot;Retourner au campement&quot;, &quot;Hub ruines&quot;)</tw-passagedata><tw-passagedata pid="62" name="hal.tracks" tags="" position="1091,7" size="100,100">forest: ./audio/forest.wav
 ruins: ./audio/ruins.wav
 village: ./audio/village.wav
 cave: ./audio/cave.wav
